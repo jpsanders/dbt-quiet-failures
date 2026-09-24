@@ -1,0 +1,17 @@
+name: quiet_failures_integration_tests
+version: 0.1.0
+config-version: 2
+profile: quiet_failures_integration_tests
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+clean-targets: ["target", "dbt_packages"]
+
+seeds:
+  quiet_failures_integration_tests:
+    customers:
+      +column_types: {customer_id: integer}
+    orders:
+      +column_types: {customer_id: integer}
+    orders_clean:
+      +column_types: {customer_id: integer}
