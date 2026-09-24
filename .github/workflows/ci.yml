@@ -1,0 +1,25 @@
+name: integration tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  duckdb:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - dbt: "1.10"
+            install: '"dbt-core~=1.10.0" "dbt-duckdb~=1.10.0"'
+          - dbt: "latest"
+            install: "dbt-duckdb"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dbt ${{ matrix.dbt }} with DuckDB
+        run: pip install ${{ matrix.install }}
+      - name: Prove each check fails on its fault and passes on clean data
+        run: integration_tests/run.sh

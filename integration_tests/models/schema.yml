@@ -1,0 +1,74 @@
+version: 2
+
+# Every test runs twice: against a fixture that contains the failure, where it
+# must find exactly the planted rows, and against a clean fixture, where it
+# must find none. A test that cannot fail proves nothing.
+
+seeds:
+  - name: orders
+    description: One null customer key, one orphan key (9) and one row on the unknown member (-1).
+    columns:
+      - name: customer_id
+        data_tests:
+          - quiet_failures.strict_relationships:
+              arguments:
+                to: ref('customers')
+                field: customer_id
+              config:
+                error_if: "!=2"
+                warn_if: "!=2"
+          # dbt's own test skips the null and misses the point.
+          - relationships:
+              arguments:
+                to: ref('customers')
+                field: customer_id
+              config:
+                error_if: "!=1"
+                warn_if: "!=1"
+
+  - name: orders_clean
+    columns:
+      - name: customer_id
+        data_tests:
+          - quiet_failures.strict_relationships:
+              arguments:
+                to: ref('customers')
+                field: customer_id
+
+  - name: names
+    description: Two garbled values, plus correct accents, a correct curly apostrophe and uppercase SÃO that must pass.
+    columns:
+      - name: full_name
+        data_tests:
+          - quiet_failures.no_mojibake:
+              config:
+                error_if: "!=2"
+                warn_if: "!=2"
+
+  - name: names_clean
+    columns:
+      - name: full_name
+        data_tests:
+          - quiet_failures.no_mojibake
+
+models:
+  - name: events_live
+    columns:
+      - name: loaded_at
+        data_tests:
+          - quiet_failures.still_loading:
+              arguments:
+                datepart: hour
+                interval: 24
+
+  - name: events_dead
+    columns:
+      - name: loaded_at
+        data_tests:
+          - quiet_failures.still_loading:
+              arguments:
+                datepart: hour
+                interval: 24
+              config:
+                error_if: "!=1"
+                warn_if: "!=1"
