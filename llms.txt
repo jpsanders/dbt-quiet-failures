@@ -1,0 +1,13 @@
+# dbt-quiet-failures
+
+> Four dbt checks for the failures that pass every other test: strict_relationships (null, empty and orphan keys),
+> no_mojibake (UTF-8 read as Latin-1), still_loading (a dead source still building) and check_rerun.sh (incremental
+> models that duplicate on a rerun). dbt 1.10 or later, no dependencies, proven in CI on DuckDB.
+
+Install: add `git: "https://github.com/jpsanders/dbt-quiet-failures.git"` with `revision: 1.0.0` to packages.yml.
+
+## Docs
+
+- [Manual](https://github.com/jpsanders/dbt-quiet-failures/blob/main/docs/MANUAL.md)
+- [Skill](https://github.com/jpsanders/dbt-quiet-failures/blob/main/skills/dbt-quiet-failures/SKILL.md)
+- [README](https://github.com/jpsanders/dbt-quiet-failures/blob/main/README.md)

@@ -1,4 +1,20 @@
-# dbt-quiet-failures
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/banner-dark.png">
+    <img alt="dbt-quiet-failures: the pipeline ran green, the numbers are still wrong" src="docs/images/banner-light.png" width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <a href="https://github.com/jpsanders/dbt-quiet-failures/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/jpsanders/dbt-quiet-failures/ci.yml?branch=main&label=CI&logo=github"></a>
+  <a href="https://github.com/jpsanders/dbt-quiet-failures/releases/latest"><img alt="Release 1.0.0" src="https://img.shields.io/badge/release-1.0.0-a95719"></a>
+  <img alt="dbt 1.10 or later" src="https://img.shields.io/badge/dbt-%3E%3D1.10-FF694B?logo=dbt&logoColor=white">
+  <img alt="Tested on DuckDB" src="https://img.shields.io/badge/tested%20on-DuckDB-FFF000?logo=duckdb&logoColor=black">
+  <img alt="No package dependencies" src="https://img.shields.io/badge/dependencies-none-2ea44f">
+  <a href="#with-an-ai-agent"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-a95719"></a>
+  <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-blue"></a>
+  <a href="https://github.com/jpsanders/dbt-quiet-failures/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/jpsanders/dbt-quiet-failures?style=flat&logo=github&color=a95719"></a>
+</p>
 
 Four dbt checks for the failures that pass every other test.
 
@@ -10,7 +26,7 @@ The pipeline ran green. The numbers are still wrong. Each check here targets one
 # packages.yml
 packages:
   - git: "https://github.com/jpsanders/dbt-quiet-failures.git"
-    revision: v0.1.0
+    revision: 1.0.0
 ```
 
 Then `dbt deps`. No other packages are needed. It needs dbt 1.10 or later. The checks use dbt's cross database macros, and CI runs them on DuckDB with dbt 1.10 and 1.12.
@@ -99,14 +115,39 @@ pip install dbt-duckdb
 integration_tests/run.sh
 ```
 
+## With an AI agent
+
+The repository is a Claude Code plugin with a skill that knows where each check belongs: every foreign key of a fact
+model, text from other systems, each source's load timestamp, and every incremental model in CI.
+
+```text
+/plugin install dbt-quiet-failures --marketplace jpsanders/dbt-quiet-failures
+```
+
+On Claude Code before 2.1.275: `/plugin marketplace add jpsanders/dbt-quiet-failures`, then
+`/plugin install dbt-quiet-failures@dbt-quiet-failures`. Then ask: "add the quiet failure checks to this dbt project".
+Other agents read [`skills/dbt-quiet-failures/SKILL.md`](skills/dbt-quiet-failures/SKILL.md) as it is.
+
+## The manual
+
+Every check, argument and exit status in one reference: [`docs/MANUAL.md`](docs/MANUAL.md), also built as a man page.
+After `dbt deps`, read it with `man -l dbt_packages/quiet_failures/man/dbt-quiet-failures.7`.
+
 ## How it was made
 
 I found and fixed each of these failures in production dbt projects. Each time the build was green and the output was wrong. For each one I specified a check that fails on the real failure and stays quiet on clean data, and the integration suite above proves both.
 
-Issues and pull requests are welcome.
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-[James Phillip Sanders](https://jamesphillipsanders.com)
+## Star history
 
-## License
+<a href="https://star-history.com/#jpsanders/dbt-quiet-failures&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jpsanders/dbt-quiet-failures&type=Date&theme=dark">
+    <img alt="Star history of jpsanders/dbt-quiet-failures" src="https://api.star-history.com/svg?repos=jpsanders/dbt-quiet-failures&type=Date">
+  </picture>
+</a>
 
-MIT
+## Licence
+
+MIT. Made by [James Phillip Sanders](https://jamesphillipsanders.com).

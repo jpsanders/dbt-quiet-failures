@@ -1,0 +1,89 @@
+.TH DBT-QUIET-FAILURES 7 "" "dbt-quiet-failures" "dbt packages"
+.SH NAME
+dbt-quiet-failures \- four dbt checks for the failures that pass every other test
+.SH SYNOPSIS
+.RS 4
+.nf
+packages:
+  \- git: "https://github.com/jpsanders/dbt\-quiet\-failures.git"
+    revision: 1.0.0
+
+quiet_failures.strict_relationships   a data test: to, field
+quiet_failures.no_mojibake            a data test: patterns (optional)
+quiet_failures.still_loading          a data test: datepart, interval
+quiet_failures.fingerprint            a macro: model
+scripts/check_rerun.sh MODEL [DBT FLAGS...]
+.fi
+.RE
+.SH DESCRIPTION
+.PP
+The pipeline ran green and the numbers are still wrong. Each check in this package targets one way that happens, and each is proven in CI against a fixture that contains the failure and against clean data where it must find nothing.
+.PP
+It needs dbt 1.10 or later and no other packages. The checks use dbt's cross database macros; CI runs them on DuckDB with dbt 1.10 and the latest dbt.
+.SH INSTALL
+.PP
+Add the package to \fBpackages.yml\fR with the release tag as the revision, then run \fBdbt deps\fR. The tests are called with the \fBquiet_failures.\fR prefix.
+.SH CHECKS
+.SS strict_relationships
+.PP
+dbt's \fBrelationships\fR test skips rows whose key is null, so a fact row passes, then vanishes from every inner join downstream, and the revenue comes out quietly short. \fBstrict_relationships\fR fails on a null key, an empty key and a key with no match in the parent. A deliberate unknown member, such as -1, passes when the dimension carries it.
+.RS 4
+.nf
+columns:
+  \- name: customer_key
+    data_tests:
+      \- quiet_failures.strict_relationships:
+          arguments:
+            to: ref('dim_customer')
+            field: customer_key
+.fi
+.RE
+.SS no_mojibake
+.PP
+UTF-8 read as Latin-1 or Windows-1252 turns "José" into "JosÃ©". \fBno_mojibake\fR fails on those byte pair signatures and on the Unicode replacement character. A lone "Ã" is not enough, so uppercase Portuguese such as "SÃO PAULO" passes. Pass \fBpatterns\fR to replace the default list.
+.RS 4
+.nf
+columns:
+  \- name: customer_name
+    data_tests:
+      \- quiet_failures.no_mojibake
+.fi
+.RE
+.SS still_loading
+.PP
+A source is switched off, its table stops updating, and every model on top of it keeps running green on old data. \fBstill_loading\fR fails when the newest value in the column is older than the window you set. Unlike \fBdbt source freshness\fR, it runs inside \fBdbt build\fR.
+.RS 4
+.nf
+columns:
+  \- name: loaded_at
+    data_tests:
+      \- quiet_failures.still_loading:
+          arguments:
+            datepart: hour
+            interval: 24
+.fi
+.RE
+.SS check_rerun.sh and fingerprint
+.PP
+An incremental model without a reliable unique key appends the same rows again when it reruns, and nothing fails. \fBscripts/check_rerun.sh\fR runs the model twice and compares the row count and the count of distinct rows after each run, using the \fBfingerprint\fR macro, and exits 1 if either moved.
+.RS 4
+.nf
+scripts/check_rerun.sh fct_orders \-\-target ci
+dbt run\-operation quiet_failures.fingerprint \-\-args '{model: fct_orders}'
+.fi
+.RE
+.SH PROOF
+.PP
+\fBintegration_tests/run.sh\fR seeds a fixture for each failure and asserts the exact rows each check returns: 2 bad keys, 2 garbled names, 1 dead source, and a rerun that doubles 3 rows to 6. Every check also runs on clean data, where it must find nothing.
+.SH EXIT STATUS
+.PP
+The data tests fail the way any dbt test fails: \fBdbt build\fR and \fBdbt test\fR exit non zero. \fBcheck_rerun.sh\fR exits 0 when the rerun left the model unchanged, 1 when it changed it, 2 on bad arguments.
+.SH FOR AGENTS
+.PP
+To harden a dbt project: add \fBstrict_relationships\fR to every foreign key in a fact model, \fBno_mojibake\fR to text columns that come from another system, and \fBstill_loading\fR to the load timestamp of each source model; then run \fBcheck_rerun.sh\fR on every incremental model in CI. Read \fBdbt build\fR output for the failing test and the rows it returned before changing data or thresholds.
+.SH SEE ALSO
+.PP
+https://github.com/jpsanders/dbt-quiet-failures
+.SH AUTHOR
+.PP
+James Phillip Sanders, https://jamesphillipsanders.com

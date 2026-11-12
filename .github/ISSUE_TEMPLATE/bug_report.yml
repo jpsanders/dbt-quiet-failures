@@ -1,0 +1,19 @@
+---
+name: Bug report
+description: A check that missed a real failure, or failed on clean data
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The check, the column, what it returned and what you expected. Anonymise the data.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: dbt-quiet-failures 1.0.0, dbt 1.12, Snowflake adapter 1.11
+    validations:
+      required: true

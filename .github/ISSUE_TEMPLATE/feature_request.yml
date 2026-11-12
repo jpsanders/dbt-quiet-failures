@@ -1,0 +1,12 @@
+---
+name: Feature request
+description: Another failure that passes every other test
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The failure
+      description: How it got past your tests, and what it did to the numbers.
+    validations:
+      required: true

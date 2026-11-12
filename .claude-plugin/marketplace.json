@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dbt-quiet-failures",
+  "description": "Four dbt checks for the failures that pass every other test.",
+  "owner": {
+    "name": "James Phillip Sanders",
+    "email": "hello@jamesphillipsanders.com"
+  },
+  "plugins": [
+    {
+      "name": "dbt-quiet-failures",
+      "description": "A skill that adds strict_relationships, no_mojibake, still_loading and a rerun check to a dbt project.",
+      "version": "1.0.0",
+      "source": "./",
+      "category": "development",
+      "homepage": "https://github.com/jpsanders/dbt-quiet-failures"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "dbt-quiet-failures",
+  "description": "A skill that hardens a dbt project with four checks for the failures that pass every other test.",
+  "version": "1.0.0",
+  "author": {
+    "name": "James Phillip Sanders",
+    "email": "hello@jamesphillipsanders.com",
+    "url": "https://jamesphillipsanders.com"
+  },
+  "homepage": "https://github.com/jpsanders/dbt-quiet-failures",
+  "repository": "https://github.com/jpsanders/dbt-quiet-failures",
+  "license": "MIT",
+  "keywords": ["dbt", "data-quality", "analytics-engineering", "data-engineering", "duckdb"]
+}
