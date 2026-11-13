@@ -8,7 +8,8 @@ Versions follow [semantic versioning](https://semver.org). Tags carry the bare v
 - A full reference as a man page, `man/dbt-quiet-failures.7`, from `docs/MANUAL.md`; CI fails when it is stale.
 - A Claude Code plugin with a skill that adds the checks to a dbt project, AGENTS.md, llms.txt, a code of conduct,
   issue forms and Dependabot for the workflow actions.
-- CI on Python 3.14 with dbt 1.10 and the latest dbt; the job names say which dbt they run.
+- CI runs dbt 1.10 on Python 3.13 (its serialiser fails on 3.14) and the latest dbt on Python 3.14; the job names say
+  which dbt they run.
 - The first release is tagged `0.1.0` now, without the v.
 
 ## 0.1.0 (2026-09-24)

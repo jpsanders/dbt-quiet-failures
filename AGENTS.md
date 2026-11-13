@@ -6,7 +6,7 @@ Instructions for AI coding agents working on dbt-quiet-failures itself. To use t
 ## Commands
 
 ```sh
-pip install dbt-duckdb           # once, Python 3.14 or earlier as dbt supports
+pip install dbt-duckdb           # once, on a Python the dbt version supports (3.14 for the latest)
 integration_tests/run.sh         # every check on its fault and on clean data; CI runs the same
 python3 scripts/build_man.py     # rebuild man/dbt-quiet-failures.7 after editing docs/MANUAL.md
 ```
